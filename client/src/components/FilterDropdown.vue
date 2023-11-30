@@ -24,7 +24,9 @@ const statuses = computed(() => {
       v-if="show"
       class="absolute top-12 right-0 z-10 w-64 p-3 bg-white rounded-lg shadow-xl border-blue-400 border-2"
     >
-      <h6 class=" text-lg text-center border-b-2 font-medium text-gray-900">Status</h6>
+      <h6 class="text-lg text-center border-b-2 font-medium text-gray-900">
+        Status
+      </h6>
 
       <ul class="space-y-3 text-sm my-6">
         <li class="flex items-center" v-for="(status, index) in statuses">
@@ -36,9 +38,12 @@ const statuses = computed(() => {
             class="w-4 h-4 bg-gray-100 border-gray-300 rounded"
             @change="$emit('filterStatus', $event.target.value)"
           />
-          <label :for="status" :key="index" class="ml-2 font-bold text-gray-900">{{
-            status
-          }}</label>
+          <label
+            :for="status"
+            :key="index"
+            class="ml-2 font-bold text-gray-900"
+            >{{ status }}</label
+          >
         </li>
       </ul>
     </div>

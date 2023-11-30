@@ -1,12 +1,12 @@
 <script setup>
-import { onMounted,ref } from "vue";
+import { onMounted, ref } from "vue";
 import DataTable from "./components/DataTable.vue";
 const items = ref([]);
 onMounted(async () => {
   const response = await fetch("/api/tasks");
   const tasks = await response.json();
   // console.log('tasks',tasks);
-  
+
   items.value = tasks;
 });
 </script>

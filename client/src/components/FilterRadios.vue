@@ -1,5 +1,4 @@
-<script setup>
-</script>
+<script setup></script>
 <template>
   <label class="flex mr-4 items-center flex-nowrap">
     <input
