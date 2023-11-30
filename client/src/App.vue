@@ -5,7 +5,7 @@ const items = ref([]);
 onMounted(async () => {
   const response = await fetch("/api/tasks");
   const tasks = await response.json();
-  console.log('tasks',tasks);
+  // console.log('tasks',tasks);
   
   items.value = tasks;
 });

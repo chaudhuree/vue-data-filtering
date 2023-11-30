@@ -1,10 +1,11 @@
 <script setup>
 import { computed, defineProps, ref } from "vue";
-// import FilterDropdown from "./FilterDropdown.vue";
+import FilterDropdown from "@/components/FilterDropdown.vue";
 import FilterRadios from "@/components/FilterRadios.vue";
 import SearchForm from "@/components/SearchForm.vue";
 const searchTerm = ref("");
 const filterTerm = ref("");
+const filterStatues = ref([]);
 const props = defineProps({
   items: {
     type: Array,
@@ -13,11 +14,12 @@ const props = defineProps({
 });
 const filteredItems = computed(() => {
   let items = props.items;
+  // filter by date
   switch (filterTerm.value) {
     case "today":
       items = items.filter((item) => {
-        console.log("item.due_at", new Date(item.due_at).getDate());
-        console.log("new Date().getDate()", new Date().getDate());
+        // console.log("item.due_at", new Date(item.due_at).getDate());
+        // console.log("new Date().getDate()", new Date().getDate());
 
         return new Date(item.due_at).getDate() === new Date().getDate();
       });
@@ -28,12 +30,19 @@ const filteredItems = computed(() => {
       });
       break;
   }
+  // filter by user and title
   if (searchTerm.value !== "") {
     items = items.filter((item) => {
       return (
         item.title.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
         item.assigned_to.toLowerCase().includes(searchTerm.value.toLowerCase())
       );
+    });
+  }
+  // filter by status
+  if (filterStatues.value.length > 0) {
+    items = items.filter((item) => {
+      return filterStatues.value.includes(item.status);
     });
   }
   return items;
@@ -44,6 +53,13 @@ const handleSearch = (value) => {
 const handleFilter = (value) => {
   filterTerm.value = value;
 };
+const handleStatus = (value) => {
+  if (filterStatues.value.includes(value)) {
+    filterStatues.value = filterStatues.value.filter((item) => item !== value);
+  } else {
+    filterStatues.value.push(value);
+  }
+};
 </script>
 
 <template>
@@ -52,7 +68,7 @@ const handleFilter = (value) => {
       <SearchForm @search="handleSearch" />
       <div class="flex items-center justify-end text-sm font-semibold">
         <FilterRadios @filter="handleFilter" />
-        <!-- <FilterDropdown /> -->
+        <FilterDropdown :items="items" @filterStatus="handleStatus"/>
       </div>
     </div>
   </div>
