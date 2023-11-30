@@ -1,9 +1,10 @@
 <script setup>
 import { computed, defineProps, ref } from "vue";
 // import FilterDropdown from "./FilterDropdown.vue";
-// import FilterRadios from "./FilterRadios.vue";
-import SearchForm from "./SearchForm.vue";
+import FilterRadios from "@/components/FilterRadios.vue";
+import SearchForm from "@/components/SearchForm.vue";
 const searchTerm = ref("");
+const filterTerm = ref("");
 const props = defineProps({
   items: {
     type: Array,
@@ -11,18 +12,37 @@ const props = defineProps({
   },
 });
 const filteredItems = computed(() => {
+  let items = props.items;
+  switch (filterTerm.value) {
+    case "today":
+      items = items.filter((item) => {
+        console.log("item.due_at", new Date(item.due_at).getDate());
+        console.log("new Date().getDate()", new Date().getDate());
+
+        return new Date(item.due_at).getDate() === new Date().getDate();
+      });
+      break;
+    case "past":
+      items = items.filter((item) => {
+        return new Date(item.due_at).getDate() < new Date().getDate();
+      });
+      break;
+  }
   if (searchTerm.value !== "") {
-    return props.items.filter((item) => {
+    items = items.filter((item) => {
       return (
         item.title.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
         item.assigned_to.toLowerCase().includes(searchTerm.value.toLowerCase())
       );
     });
   }
-  return props.items;
+  return items;
 });
 const handleSearch = (value) => {
   searchTerm.value = value;
+};
+const handleFilter = (value) => {
+  filterTerm.value = value;
 };
 </script>
 
@@ -31,8 +51,8 @@ const handleSearch = (value) => {
     <div class="flex items-center justify-between">
       <SearchForm @search="handleSearch" />
       <div class="flex items-center justify-end text-sm font-semibold">
-        <!-- <FilterRadios />
-        <FilterDropdown /> -->
+        <FilterRadios @filter="handleFilter" />
+        <!-- <FilterDropdown /> -->
       </div>
     </div>
   </div>
